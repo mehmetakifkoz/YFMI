@@ -14,14 +14,11 @@ const int R1 = 10300;           // 10K resistor
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("CLEARDATA");
-  Serial.println("LABEL,CLOCK,SAMPLE,TEMP"); //parallax daq excel direktifleri
   ads.init();
   ads.bypassPGA(true);
   ads.setFIRFilter(ADS1220_50HZ_60HZ);
 }
 
-int sampleCount = 0;
 void loop() {
   // Analog Temperature
   ads.setCompareChannels(ADS1220_MUX_2_AVSS);
@@ -34,8 +31,7 @@ void loop() {
   float T_ntc = 1.0 / ((1.0 / (273.15 + T_nominal)) + (1.0 / beta) * log(R_ntc / R_nominal));
   float atemp = T_ntc - 273.15; // Convert back to Celsius
 
-  Serial.print("DATA,TIME,");
+  // print the analog temperature
   Serial.print(atemp); 
   Serial.print("\n");
-  sampleCount++;
 }
