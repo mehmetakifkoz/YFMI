@@ -7,8 +7,9 @@ public:
     OUTLIER_THRESHOLD = outlierThreshold;
     values = new float[WINDOW_SIZE];
     currentIndex = 0;
-
-    initializeMOVG();
+    for (int i = 0; i < WINDOW_SIZE; i++) {
+      values[i] = 0.0;
+    }
   }
 
   ~MOVG() {
@@ -55,10 +56,4 @@ private:
   float OUTLIER_THRESHOLD;
   float* values;
   int currentIndex;
-
-  void initializeMOVG() {
-    for (int i = 0; i < WINDOW_SIZE; i++) {
-      values[i] = 0.0;
-    }
-  }
 };
