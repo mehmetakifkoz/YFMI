@@ -31,10 +31,10 @@ void loop(void) {
   float m_temp2 = movg_T2.computeMOVG(temp2);
   Serial.print(temp1);
   Serial.print(" ");
-  Serial.print(movg_temp1);
+  Serial.print(m_temp1);
   Serial.print(" ");
   Serial.print(temp2);
   Serial.print(" ");
-  Serial.print(movg_temp2);
+  Serial.print(m_temp2);
   Serial.print("\n");
 }
