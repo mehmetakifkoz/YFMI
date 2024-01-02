@@ -1,0 +1,47 @@
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+#define ONE_WIRE_BUS 5 // Data wire is plugged into port 9 on the Arduino
+#define precision 12 // OneWire precision Dallas Sensor
+
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire); // Pass our oneWire reference to Dallas Temperature.
+
+DeviceAddress T1 = {0x28, 0x31, 0x30, 0x94, 0x97, 0x03, 0x03, 0x4A};
+DeviceAddress T2 = {0x28, 0x03, 0x2C, 0x94, 0x97, 0x04, 0x03, 0xFA};
+
+void setup(void) {
+  Serial.begin(9600); //Start serial port
+  
+  //parallax daq excel directives
+  Serial.println("CLEARDATA");
+  Serial.print("LABEL,CLOCK,SAMPLE");
+  Serial.print(",T1,T2");
+  Serial.print("\n");
+
+  // Start up the library
+  sensors.begin();
+
+  // set the resolution to 12 bit per device
+  sensors.setResolution(T1, precision);
+  sensors.setResolution(T2, precision);
+}
+
+int sample_count = 0;
+void loop(void) {
+  // call sensors.requestTemperatures() to issue a global temperature request to all devices on the bus
+  sensors.requestTemperatures();
+  float temp1 = sensors.getTempC(T1);
+  float temp2 = sensors.getTempC(T2);
+
+  Serial.print("DATA,TIME,");
+  Serial.print(sample_count);
+  Serial.print(",");
+  Serial.print(temp1);
+  Serial.print(",");
+  Serial.print(temp2);
+  Serial.print("\n");
+
+  // increment the sample count
+  sample_count++;
+}
