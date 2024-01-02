@@ -26,7 +26,7 @@ void setup(void) {
   Serial.begin(9600); //Start serial port
   Wire.begin();
   
-  // Initialize AHT sensor at address 0x39
+  // Initialize AHT sensor at address 0x39 and 0x38
   aht_0x39.begin(&Wire, 0, 0x39);
   aht_0x38.begin(&Wire, 0, 0x38);
   
