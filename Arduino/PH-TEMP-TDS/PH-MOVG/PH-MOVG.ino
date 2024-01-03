@@ -1,5 +1,5 @@
 #include <ADS1220_WE.h>
-#include "MOVG.h"
+#include <MOVG.h>
 
 #define ADS1220_CS_PIN    7 // chip select pin
 #define ADS1220_DRDY_PIN  6 // data ready pin

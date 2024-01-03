@@ -1,7 +1,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ADS1220_WE.h>
-#include "MOVG.h"
+#include <MOVG.h>
 
 #define ONE_WIRE_BUS 5 // Data wire is plugged into port 9 on the Arduino
 #define precision 12 // OneWire precision Dallas Sensor
