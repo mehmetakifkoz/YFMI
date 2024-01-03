@@ -44,31 +44,28 @@ void setup(void) {
 int sampleCount = 0;
 void loop(void) {
   // PH
-  ads.setCompareChannels(ADS1220_MUX_0_1);
   float PH;
   float m_PH;
-  for(int i=0; i<64; i++){
-    PH = ads.getVoltage_mV();
-    m_PH = movg_PH.computeMOVG(PH);
-  }
+  ads.setCompareChannels(ADS1220_MUX_0_1);
 
   // DS18B20
   float temp1;
   float temp2;
   float m_temp1;
   float m_temp2;
+
+  // compute moving average
   for(int i=0; i<32; i++){
     sensors.requestTemperatures();
     temp1 = sensors.getTempC(T1);
     temp2 = sensors.getTempC(T2);
     m_temp1 = movg_T1.computeMOVG(temp1);
     m_temp2 = movg_T2.computeMOVG(temp2);
-  }
-
-  // PH
-  for(int i=0; i<64; i++){
-    PH = ads.getVoltage_mV();
-    m_PH = movg_PH.computeMOVG(PH);
+    // PH
+    for(int i=0; i<4; i++){
+      PH = ads.getVoltage_mV();
+      m_PH = movg_PH.computeMOVG(PH);
+    }
   }
 
   // Analog Temperature
