@@ -8,12 +8,6 @@
 #define ADS1220_CS_PIN    7 // chip select pin
 #define ADS1220_DRDY_PIN  6 // data ready pin
 
-// analog temperature parameters
-const float R_nominal = 10660.0; // Nominal resistance at 25.00°C
-const float T_nominal = 25.00;   // Nominal temperature
-const float beta = 3965.0;       // Beta value
-const int R1 = 10300;           // 10K resistor
-
 // Pass oneWire reference to Dallas Temperature
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
