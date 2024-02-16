@@ -22,8 +22,7 @@ function sendPayload(sample) { // Receive sample as an argument
     var ph_mV = parseFloat((Math.random() * (150 - 45) + 45).toFixed(2)); // Assuming the range of PH_mV sensor
     var tds_mV = parseFloat((Math.random() * (150 - 45) + 45).toFixed(2)); // Assuming the range of TDS_mV sensor
     var now = new Date();
-    var offsetString = "+03:00";
-    var rec_datetime = now.toISOString().replace('Z', offsetString);
+    var rec_datetime = toIsoString(now);
 
     var IoT_Payload = {
         "REC_DATETIME": rec_datetime,
@@ -38,6 +37,23 @@ function sendPayload(sample) { // Receive sample as an argument
     mqttManager.publish(topic, payload);
     out("Topic is:  \n" + topic);
     out("payload sent \n" + payload);
+}
+
+function toIsoString(date) {
+var tzo = -date.getTimezoneOffset(),
+    dif = tzo >= 0 ? '+' : '-',
+    pad = function(num) {
+        return (num < 10 ? '0' : '') + num;
+    };
+
+return date.getFullYear() +
+    '-' + pad(date.getMonth() + 1) +
+    '-' + pad(date.getDate()) +
+    'T' + pad(date.getHours()) +
+    ':' + pad(date.getMinutes()) +
+    ':' + pad(date.getSeconds()) +
+    dif + pad(Math.floor(Math.abs(tzo) / 60)) +
+    ':' + pad(Math.abs(tzo) % 60);
 }
 
 function out(message) {
