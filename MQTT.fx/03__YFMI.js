@@ -18,7 +18,9 @@ function execute(action) {
 }
 
 function sendPayload(sample) { // Receive sample as an argument
-    var temp = parseFloat((Math.random() * (45 - 25) + 25).toFixed(2));
+    var at = parseFloat((Math.random() * (45 - 25) + 25).toFixed(2));
+    var dt1 = parseFloat((Math.random() * (45 - 25) + 25).toFixed(2));
+    var dt2 = parseFloat((Math.random() * (45 - 25) + 25).toFixed(2));
     var ph_mV = parseFloat((Math.random() * (150 - 45) + 45).toFixed(2)); // Assuming the range of PH_mV sensor
     var tds_mV = parseFloat((Math.random() * (150 - 45) + 45).toFixed(2)); // Assuming the range of TDS_mV sensor
     var now = new Date();
@@ -27,7 +29,9 @@ function sendPayload(sample) { // Receive sample as an argument
     var IoT_Payload = {
         "REC_DATETIME": rec_datetime,
         "SAMPLE": sample,
-        "TEMP": temp,
+        "AT": at,
+        "DT1": dt1,
+        "DT2": dt2,
         "PH_mV": ph_mV,
         "TDS_mV": tds_mV
     };
