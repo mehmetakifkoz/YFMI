@@ -69,17 +69,17 @@ void loop() {
 
   char fakeData[128];
 
-  float at = random(25, 45); // Analog Temperature (AT)
-  float dt1 = random(25, 45); // Digital Temperature 1 (DT1)
-  float dt2 = random(25, 45); // Digital Temperature 2 (DT2)
-  float ph_mv = random(45, 150); // pH_mV
-  float tds_mv = random(45, 150); // TDS_mV
+  float dt1 = random(2500, 4500) / 100.0; // Digital Temperature 1 (DT1)
+  float dt2 = random(2500, 4500) / 100.0; // Digital Temperature 2 (DT2)
+  float at_mv = random(4500, 15000) / 100.0; // Analog Temperature (AT_mV)
+  float ph_mv = random(4500, 15000) / 100.0; // pH_mV
+  float tds_mv = random(4500, 15000) / 100.0; // TDS_mV
 
-  sprintf(fakeData, "{\"UPTIME\":%lu,\"SAMPLE\":%d,\"AT\":%.0f,\"DT1\":%.0f,\"DT2\":%.0f,\"pH_mV\":%.0f,\"TDS_mV\":%.0f}",
-          millis() / 1000, sample, at, dt1, dt2, ph_mv, tds_mv);
+  sprintf(fakeData, "{\"SAMPLE\":%d,\"DT1\":%.2f,\"DT2\":%.2f,\"AT_mV\":%.2f,\"PH_mV\":%.2f,\"TDS_mV\":%.2f}",
+          sample, dt1, dt2, at_mv, ph_mv, tds_mv);
 
   if (millis() - lastPublish > 10000) {
-    boolean rc = pubSubClient.publish("outTopic", fakeData);
+    boolean rc = pubSubClient.publish("YFMI", fakeData);
     Serial.print("Published, rc="); Serial.print( (rc ? "OK: " : "FAILED: ") );
     Serial.println(fakeData);
     lastPublish = millis();
