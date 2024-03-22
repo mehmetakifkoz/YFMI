@@ -43,6 +43,31 @@ public:
     return average;
   }
 
+  float computeMOVG() {
+    float sum = 0.0;
+    int count = 0;
+    for (int i = 0; i < WINDOW_SIZE; i++) {
+      sum += values[i];
+      count++;
+    }
+    float average = sum / count;
+    float sumSquaredDiff = 0.0;
+    for (int i = 0; i < WINDOW_SIZE; i++) {
+      sumSquaredDiff += pow((values[i] - average), 2);
+    }
+    float standardDeviation = sqrt(sumSquaredDiff / count);
+    for (int i = 0; i < WINDOW_SIZE; i++) {
+      if (abs(values[i] - average) > OUTLIER_THRESHOLD * standardDeviation) {
+        sum -= values[i];
+        count--;
+      }
+    }
+    if (count > 0) {
+      average = sum / count;
+    }
+    return average;
+  }
+
 private:
   int WINDOW_SIZE;
   float OUTLIER_THRESHOLD;
