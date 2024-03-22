@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ADS1220_WE.h>
@@ -80,7 +81,7 @@ void loop(void) {
   float atemp = T_ntc - 273.15; // Convert back to Celsius
 
   // Serial.print
-  Serial.print("DATA,TIME,");
+  Serial.print("DATA,DATE TIME,");
   Serial.print(sampleCount);
   Serial.print(",");
   Serial.print(m_PH);
