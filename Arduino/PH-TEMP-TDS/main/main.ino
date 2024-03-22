@@ -38,23 +38,13 @@ void setup(void) {
 
 int sampleCount = 0;
 void loop(void) {
-  // pH_mV
-  float pH_mV;
-  ads.setCompareChannels(ADS1220_MUX_0_1);
-
-  // DS18B20
+  // Digital Temperature (DS18B20)
   float DT1;
   float DT2;
-
-  // compute moving average
   for(int i=0; i<32; i++){
     sensors.requestTemperatures();
     DT1 = movg_DT1.computeMOVG(sensors.getTempC(DT1Address));
     DT2 = movg_DT2.computeMOVG(sensors.getTempC(DT2Address));
-    // PH
-    for(int i=0; i<4; i++){
-      pH_mV = movg_pH_mV.computeMOVG(pH_mV = ads.getVoltage_mV());
-    }
   }
 
   // Analog Temperature
@@ -65,6 +55,17 @@ void loop(void) {
   // Read NTC resistance
   float AT_mV = (Vin - Vout) / Vout;
 
+  // pH_mV
+  float pH_mV;
+  ads.setCompareChannels(ADS1220_MUX_0_1);
+  for(int i=0; i<128; i++){
+    pH_mV = movg_pH_mV.computeMOVG(pH_mV = ads.getVoltage_mV());
+  }
+
+  // TDS_mV
+  ads.setCompareChannels(ADS1220_MUX_3_AVSS);
+  float TDS_mV = ads.getVoltage_mV();
+
   // Serial.print
   Serial.print("DATA,DATE TIME,");
   Serial.print(sampleCount);
@@ -73,9 +74,11 @@ void loop(void) {
   Serial.print(",");
   Serial.print(DT2);
   Serial.print(",");
+  Serial.print(AT_mV);
+  Serial.print(",");
   Serial.print(pH_mV);
   Serial.print(",");
-  Serial.print(AT_mV); 
+  Serial.print(TDS_mV);
   Serial.print("\n");
   sampleCount++;
 }
