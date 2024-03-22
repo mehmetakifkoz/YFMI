@@ -17,8 +17,8 @@ public:
   }
 
   float computeMOVG(float newValue) {
-  addValue(newValue);
-  return computeMOVG();
+    addValue(newValue);
+    return computeMOVG();
   }
 
   // computeMOVG method without parameters
