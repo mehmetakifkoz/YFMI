@@ -43,9 +43,11 @@ void loop(void) {
   float DT2;
   for(int i=0; i<32; i++){
     sensors.requestTemperatures();
-    DT1 = movg_DT1.computeMOVG(sensors.getTempC(DT1Address));
-    DT2 = movg_DT2.computeMOVG(sensors.getTempC(DT2Address));
+    movg_DT1.addValue(sensors.getTempC(DT1Address));
+    movg_DT2.addValue(sensors.getTempC(DT2Address));
   }
+  DT1 = movg_DT1.computeMOVG();
+  DT2 = movg_DT2.computeMOVG();
 
   // Analog Temperature
   ads.setCompareChannels(ADS1220_MUX_2_AVSS);
@@ -59,8 +61,9 @@ void loop(void) {
   float pH_mV;
   ads.setCompareChannels(ADS1220_MUX_0_1);
   for(int i=0; i<128; i++){
-    pH_mV = movg_pH_mV.computeMOVG(pH_mV = ads.getVoltage_mV());
+    movg_pH_mV.addValue(ads.getVoltage_mV());
   }
+  pH_mV = movg_pH_mV.computeMOVG();
 
   // TDS_mV
   ads.setCompareChannels(ADS1220_MUX_3_AVSS);
