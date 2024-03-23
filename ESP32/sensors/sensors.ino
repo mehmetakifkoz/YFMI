@@ -3,10 +3,10 @@
 #include <ADS1220_WE.h>
 #include <MOVG.h>
 
-#define ONE_WIRE_BUS 5 // Data wire is plugged into port 9 on the Arduino
+#define ONE_WIRE_BUS 20 // Data wire is plugged into port 9 on the Arduino
 #define precision 12 // OneWire precision Dallas Sensor
-#define ADS1220_CS_PIN 7 // chip select pin
-#define ADS1220_DRDY_PIN 6 // data ready pin
+#define ADS1220_CS_PIN 14 // chip select pin
+#define ADS1220_DRDY_PIN 3 // data ready pin
 
 // Pass oneWire reference to Dallas Temperature
 OneWire oneWire(ONE_WIRE_BUS);
@@ -24,6 +24,7 @@ MOVG movg_pH_mV(128, 2);
 
 void setup(void) {
   Serial.begin(9600);
+  delay(5000);
   //parallax daq excel directives
   Serial.println("CLEARDATA");
   Serial.println("LABEL,CLOCK,SAMPLE,DT1,DT2,AT_mV,pH_mV,TDS_mV");
