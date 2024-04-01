@@ -1,2 +1,2 @@
-![YFMI_ER_Diagram](https://github.com/mastar-eki/YFMI/assets/101871226/e17ef0a8-4324-49a4-ae32-76c2b1295d01)
-![YFMI_RS](https://github.com/mastar-eki/YFMI/assets/101871226/9707b662-06df-4aa0-846d-742218a31eb1)
+![er](https://github.com/mastar-eki/YFMI/assets/101871226/3c08895c-ca61-4c48-bfff-0fdc0a984894)
+![rs](https://github.com/mastar-eki/YFMI/assets/101871226/431e2cfc-c2a8-4ce8-aaf5-4a4b63e42e61)
