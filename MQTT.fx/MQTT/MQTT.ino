@@ -75,7 +75,7 @@ void loop() {
   float ph_mv = random(4500, 15000) / 100.0; // pH_mV
   float tds_mv = random(4500, 15000) / 100.0; // TDS_mV
 
-  sprintf(fakeData, "{\"SAMPLE\":%d,\"DT1\":%.2f,\"DT2\":%.2f,\"AT_mV\":%.2f,\"PH_mV\":%.2f,\"TDS_mV\":%.2f}",
+  sprintf(fakeData, "{\"SAMPLE\":%d,\"DT1\":%.2f,\"DT2\":%.2f,\"AT_mV\":%.2f,\"pH_mV\":%.2f,\"TDS_mV\":%.2f}",
           sample, dt1, dt2, at_mv, ph_mv, tds_mv);
 
   if (millis() - lastPublish > 10000) {
