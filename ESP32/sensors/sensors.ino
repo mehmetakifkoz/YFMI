@@ -1,7 +1,7 @@
+#include <MOVG.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <ADS1220_WE.h>
-#include <MOVG.h>
 
 #define ONE_WIRE_BUS 20 // Data wire is plugged into port 9 on the Arduino
 #define precision 12 // OneWire precision Dallas Sensor
@@ -22,57 +22,49 @@ MOVG movg_DT1(32, 2);
 MOVG movg_DT2(32, 2);
 MOVG movg_pH_mV(128, 2);
 
-void setup(void) {
+void setup() {
   Serial.begin(9600);
   delay(5000);
+
   //parallax daq excel directives
   Serial.println("CLEARDATA");
   Serial.println("LABEL,CLOCK,SAMPLE,DT1,DT2,AT_mV,pH_mV,TDS_mV");
-  // sensors setup
+
+  // DS18B20
   sensors.begin();
   sensors.setResolution(DT1Address, precision);
   sensors.setResolution(DT2Address, precision);
+
+  //ADS
   ads.init();
   ads.bypassPGA(true);
   ads.setFIRFilter(ADS1220_50HZ_60HZ);
 }
 
-int sampleCount = 0;
-void loop(void) {
-  // Digital Temperature (DS18B20)
-  float DT1;
-  float DT2;
-  for(int i=0; i<32; i++){
+int SAMPLE = 0;
+void loop() {
+  // Digital Temperature
+  for (int i=0; i<32; i++) {
     sensors.requestTemperatures();
     movg_DT1.addValue(sensors.getTempC(DT1Address));
     movg_DT2.addValue(sensors.getTempC(DT2Address));
   }
-  DT1 = movg_DT1.computeMOVG();
-  DT2 = movg_DT2.computeMOVG();
+  float DT1 = movg_DT1.computeMOVG();
+  float DT2 = movg_DT2.computeMOVG();
 
-  // Analog Temperature
-  ads.setCompareChannels(ADS1220_MUX_2_AVSS);
-  float Vout = ads.getVoltage_mV();  // Voltage drop across NTC
-  ads.setCompareChannels(ADS1220_MUX_AVDD_M_AVSS_4);
-  float Vin = ads.getVoltage_mV() * 4.0;  // Total voltage across R1
-  // Read NTC resistance
-  float AT_mV = (Vin - Vout) / Vout;
-
-  // pH_mV
-  float pH_mV;
-  ads.setCompareChannels(ADS1220_MUX_0_1);
-  for(int i=0; i<128; i++){
+  // pH
+  for (int i=0; i<128; i++) {
+    ads.setCompareChannels(ADS1220_MUX_0_1);
     movg_pH_mV.addValue(ads.getVoltage_mV());
   }
-  pH_mV = movg_pH_mV.computeMOVG();
+  float pH_mV = movg_pH_mV.computeMOVG();
 
-  // TDS_mV
-  ads.setCompareChannels(ADS1220_MUX_3_AVSS);
-  float TDS_mV = ads.getVoltage_mV();
+  float AT_mV = random(4500, 15000) / 100.0; // Analog Temperature Voltage (AT_mV)
+  float TDS_mV = random(4500, 15000) / 100.0; // TDS_mV
 
-  // Serial.print
+  // Serial.print()
   Serial.print("DATA,DATE TIME,");
-  Serial.print(sampleCount);
+  Serial.print(SAMPLE);
   Serial.print(",");
   Serial.print(DT1);
   Serial.print(",");
@@ -83,6 +75,6 @@ void loop(void) {
   Serial.print(pH_mV);
   Serial.print(",");
   Serial.print(TDS_mV);
-  Serial.print("\n");
-  sampleCount++;
+  Serial.print('\n');
+  SAMPLE++;
 }
