@@ -16,16 +16,13 @@ DallasTemperature sensors(&oneWire);
 DeviceAddress DT1Address = {0x28, 0x31, 0x30, 0x94, 0x97, 0x03, 0x03, 0x4A};
 DeviceAddress DT2Address = {0x28, 0x03, 0x2C, 0x94, 0x97, 0x04, 0x03, 0xFA};
 
-// Construct the ADS1220 object
-ADS1220_WE ads = ADS1220_WE(ADS1220_CS_PIN, ADS1220_DRDY_PIN);
-
 // moving average filter
 MOVG movg_DT1(32, 2);
 MOVG movg_DT2(32, 2);
 MOVG movg_pH_mV(128, 2);
 
-const char* ssid = "YOUR NETWORK NAME";
-const char* password = "YOUR NETWORK PASSWORD";
+const char* ssid = "YOUR-NETWORK-NAME";
+const char* password = "YOUR-NETWORK-PASSWORD";
 
 const char* awsEndpoint = "YOUR-AWS-IOT-ENDPOINT"; //AWS IoT Core--> Settings (Device data endpoint)
 
@@ -50,7 +47,6 @@ static const char rootCA[] PROGMEM = R"EOF(
 -----END CERTIFICATE-----
 )EOF";
 
-
 WiFiClientSecure wiFiClient;
 void msgReceived(char* topic, byte* payload, unsigned int len);
 PubSubClient pubSubClient(awsEndpoint, 8883, msgReceived, wiFiClient); 
@@ -67,11 +63,6 @@ void setup() {
   sensors.begin();
   sensors.setResolution(DT1Address, precision);
   sensors.setResolution(DT2Address, precision);
-
-  //ADS
-  ads.init();
-  ads.bypassPGA(true);
-  ads.setFIRFilter(ADS1220_50HZ_60HZ);
   
   WiFi.begin(ssid, password);
   WiFi.waitForConnectResult();
@@ -92,15 +83,42 @@ void loop() {
   float DT1 = movg_DT1.computeMOVG();
   float DT2 = movg_DT2.computeMOVG();
 
-  // pH
+  // Analog Temperature Voltage (AT_mV)
+  float AT_mV = 0;
+  {
+    ADS1220_WE ads = ADS1220_WE(ADS1220_CS_PIN, ADS1220_DRDY_PIN);
+    ads.init();
+    ads.bypassPGA(true);
+    ads.setFIRFilter(ADS1220_50HZ_60HZ);
+    ads.setCompareChannels(ADS1220_MUX_2_AVSS);
+    float Vout = ads.getVoltage_mV();  // Voltage drop across NTC
+    ads.setCompareChannels(ADS1220_MUX_AVDD_M_AVSS_4);
+    float Vin = ads.getVoltage_mV() * 4.0;  // Total voltage across R1
+    // Read NTC resistance
+    AT_mV = ((Vin - Vout) / Vout);
+  }
+
+  // pH_mV
   for (int i=0; i<128; i++) {
+    ADS1220_WE ads = ADS1220_WE(ADS1220_CS_PIN, ADS1220_DRDY_PIN);
+    ads.init();
+    ads.bypassPGA(true);
+    ads.setFIRFilter(ADS1220_50HZ_60HZ);
     ads.setCompareChannels(ADS1220_MUX_0_1);
     movg_pH_mV.addValue(ads.getVoltage_mV());
   }
   float pH_mV = movg_pH_mV.computeMOVG();
 
-  float AT_mV = random(4500, 15000) / 100.0; // Analog Temperature Voltage (AT_mV)
-  float TDS_mV = random(4500, 15000) / 100.0; // TDS_mV
+  // TDS_mV
+  float TDS_mV = 0;
+  {
+    ADS1220_WE ads = ADS1220_WE(ADS1220_CS_PIN, ADS1220_DRDY_PIN);
+    ads.init();
+    ads.bypassPGA(true);
+    ads.setFIRFilter(ADS1220_50HZ_60HZ);
+    ads.setCompareChannels(ADS1220_MUX_3_AVSS);
+    TDS_mV = ads.getVoltage_mV();
+  }
 
   // Serial.print()
   Serial.print("DATA,DATE TIME,");
